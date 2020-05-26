@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: May 22, 2020 at 11:48 PM
+-- Generation Time: May 26, 2020 at 10:50 AM
 -- Server version: 10.4.10-MariaDB
 -- PHP Version: 7.3.12
 
@@ -21,6 +21,27 @@ SET time_zone = "+00:00";
 --
 -- Database: `shopping`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin`
+--
+
+DROP TABLE IF EXISTS `admin`;
+CREATE TABLE IF NOT EXISTS `admin` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Email` varchar(250) NOT NULL,
+  `password` varchar(250) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`ID`, `Email`, `password`) VALUES
+(1, 'admin@gmail.com', 'azerty');
 
 -- --------------------------------------------------------
 
@@ -71,7 +92,7 @@ CREATE TABLE IF NOT EXISTS `commande` (
   `DATE_COMMANDE` timestamp NOT NULL DEFAULT current_timestamp(),
   `ID_PFIX` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`ID_COMMANDE`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `commande`
@@ -81,7 +102,8 @@ INSERT INTO `commande` (`ID_COMMANDE`, `ID`, `DATE_COMMANDE`, `ID_PFIX`) VALUES
 (1, '1', '2020-05-22 22:33:10', NULL),
 (2, '1', '2020-05-22 23:19:03', NULL),
 (3, '1', '2020-05-22 23:29:56', NULL),
-(4, '1', '2020-05-22 23:38:39', NULL);
+(4, '1', '2020-05-22 23:38:39', NULL),
+(5, '1', '2020-05-23 23:06:41', NULL);
 
 -- --------------------------------------------------------
 
@@ -102,15 +124,26 @@ CREATE TABLE IF NOT EXISTS `contenir` (
 --
 
 INSERT INTO `contenir` (`ID_PRD`, `ID_COMMANDE`, `QTE`) VALUES
+(15, 5, 1),
+(16, 5, 4),
 (17, 3, 3),
 (17, 4, 1),
+(34, 5, 1),
 (35, 3, 1),
 (35, 4, 1);
 
 --
 -- Triggers `contenir`
 --
-
+DROP TRIGGER IF EXISTS `after_members_insert`;
+DELIMITER $$
+CREATE TRIGGER `after_members_insert` AFTER INSERT ON `contenir` FOR EACH ROW BEGIN
+   UPDATE produit
+    SET produit.QTE_MAX = produit.QTE_MAX - NEW.Qte
+    WHERE produit.ID_PRD = NEW.ID_PRD;
+   END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -190,8 +223,8 @@ INSERT INTO `produit` (`ID_PRD`, `NOM`, `QTE_MAX`, `IMAGE`, `Nom_cat`, `PRIX`) V
 (12, 'Ananace 1Kg', 5, 0x372e6a7067, 'Legumes_et_fruites', 21.45),
 (13, 'Pois 750g', 5, 0x382e6a7067, 'Legumes_et_fruites', 12.25),
 (14, 'Kiwi  1Kg', 5, 0x342e6a7067, 'Legumes_et_fruites', 22),
-(15, 'Orange 1Kg', 5, 0x31312e6a7067, 'Legumes_et_fruites', 8),
-(16, 'Courgette 1Kg', 5, 0x31382e6a7067, 'Legumes_et_fruites', 9.15),
+(15, 'Orange 1Kg', 4, 0x31312e6a7067, 'Legumes_et_fruites', 8),
+(16, 'Courgette 1Kg', 1, 0x31382e6a7067, 'Legumes_et_fruites', 9.15),
 (17, 'Poire Importee 1kg', 1, 0x31322e6a7067, 'Legumes_et_fruites', 13),
 (18, 'Potiron 1Kg', 5, 0x31342e6a7067, 'Legumes_et_fruites', 6.55),
 (19, 'Raisin Blanc Local 1 Kg', 5, 0x31372e6a7067, 'Legumes_et_fruites', 13),
@@ -209,7 +242,7 @@ INSERT INTO `produit` (`ID_PRD`, `NOM`, `QTE_MAX`, `IMAGE`, `Nom_cat`, `PRIX`) V
 (31, 'Pulpy 12 x 25Cl', 5, 0x31312e6a7067, 'Eau_et_boissons', 23.25),
 (32, 'Atay Lmossam 250g', 5, 0x31322e6a7067, 'Eau_et_boissons', 9),
 (33, 'Jus Ananas 1L', 5, 0x31332e6a7067, 'Eau_et_boissons', 7.95),
-(34, 'Pulpy 8 x 1L', 5, 0x31342e6a7067, 'Eau_et_boissons', 63.45),
+(34, 'Pulpy 8 x 1L', 4, 0x31342e6a7067, 'Eau_et_boissons', 63.45),
 (35, 'Jus Orange1L', 3, 0x31352e6a7067, 'Eau_et_boissons', 13),
 (36, 'Sirops 75 Cl', 5, 0x31362e6a7067, 'Eau_et_boissons', 14.95),
 (37, 'Lait Vitahaliv 250g', 5, 0x31372e6a7067, 'Eau_et_boissons', 15),
