@@ -1,9 +1,11 @@
 <?php
-     require '../../codesource/Database/database.php';
+    //  require '../../codesource/Database/database.php';
+     require '../classe/Produit.php';
      $ID_prd    = $Nom = $Qte_MAX = $IMAGE  = $Nom_cat =  $Prix = $Nomerror = $NomError = $Qte_MAXError = $IMAGEError = $Nom_catError = "";
      $isSuccess  = $status =  true;
      $password = "";
      $error = null;
+     $p = "";
      session_start();
      if( $_SESSION["user"] == null){
         header("Location:../Login.php");
@@ -32,10 +34,6 @@
                $IMAGEError = "Les fichier autorises sont : .jpg, .jpng , .png , .gif";
                $isSuccess = false;   
            }
-           if(file_exists($imagePath)){
-               $IMAGEError = "Le fichier existe deja";
-               $isSuccess = false;
-           }
            if($_FILES["image"]["size"] > 500000){ 
                $imageError = "Le fichier ne doit pas depasser le 500KB";
                $isSuccess = false;
@@ -47,17 +45,14 @@
            }
           
     if($isSuccess){
-        
-        try{
-            $db = Database::connect();
-            $statement = $db->prepare("Insert into produit (NOM,QTE_MAX,IMAGE,Nom_cat,PRIX) value(?,?,?,?,?)");
-            $statement->execute(array($Nom,$Qte_MAX,$IMAGE,$Nom_cat,$Prix)); 
-            move_uploaded_file($_FILES['image']['tmp_name'],$target);  
-            Database::disconnect();
+        $status = false;
+        move_uploaded_file($_FILES['image']['tmp_name'],$target);  
+        $p = new Produit();
+        $status = $p->Ajoute($Nom,$Qte_MAX,$IMAGE,$Nom_cat,$Prix);
+        // $p->fin();
+        if($status){
             header("Location: Ajoute.php");
-        }catch(Exception $e){
-            die('Erreur : ' . $e->getMessage());
-        }
+        } 
     }
          }
      }

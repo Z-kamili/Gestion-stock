@@ -1,8 +1,9 @@
 <?php
      
-     require '../../codesource/Database/database.php';
+    //  require '../../codesource/Database/database.php';
+    require '../classe/Produit.php';
      $id =  $nom_prd = $ID_prd = $error  = $qte_max = $categorie = $prix = $nom_prdeerror =   $qte_maxError = $categorieError = $prixError = "";
-     $isSuccess = true;
+     $isSuccess = $status =  true;
      $Disponible = "vrai";
      session_start();
      if($_SESSION["user"] == null){
@@ -48,17 +49,15 @@
 
            
     if($isSuccess){
-        try{
-            $db = Database::connect();
-            $id = $_POST["id"];
-            $statement = $db->prepare("Update produit set NOM = ?,QTE_MAX = ?,Nom_cat = ?,PRIX = ? where  ID_PRD = ?");
-            $statement->execute([$nom_prd,$qte_max,$categorie,$prix,$id]);     
-            Database::disconnect();
+        $status = false;
+        $id = $_POST["id"];
+        $p = new Produit();
+        $status = $p->Update($nom_prd,$qte_max,$categorie,$prix,$id);
+        // $p->fin();
+        if($status){
             header("Location:produit.php");
-        }catch(Exception $e){
-            die('Erreur : ' . $e->getMessage());
         }
-        }
+    }
         
     }else{
             $db = Database::connect();

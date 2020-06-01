@@ -207,7 +207,7 @@ if($item['QTE_MAX'] < 5 ){
   </div>
 </div>
 <script type="text/javascript">
-  setInterval("my_function();",10000); 
+  setInterval("my_function();",60000); 
  
     function my_function(){
         window.location = location.href;

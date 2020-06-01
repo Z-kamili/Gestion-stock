@@ -1,22 +1,25 @@
 <?php
      
-     require '../../codesource/Database/database.php';
+    //  require '../../codesource/Database/database.php';
+    require '../classe/Produit.php';
        $id = "";
+       $status = false;
      session_start();
      if( $_SESSION["user"] == null){
         header("Location:http://localhost/Tbeb-Lik/admin/Login.php");
      }
-   
 if(!empty($_GET['id'])){
     $id = $_GET['id'];   
 }
 if(!empty($_POST)){
   $id = $_POST['id'];
-  $db = Database::connect();
-  $statement = $db->prepare("delete from produit where ID_PRD = ?");
-  $statement->execute(array($id));
-  Database::disconnect();
-  header("Location:produit.php");  
+  $p = new Produit();
+  $status = $p->delete($id);
+//   $p->fin();
+  if($status){
+    header("Location:produit.php");  
+  }
+
 }
 ?>
 
